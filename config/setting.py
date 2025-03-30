@@ -23,6 +23,12 @@ PROCESSED_DATA_PATH = PROCESSED_DATA_DIR / 'processed_data.csv'
 FILTERED_DATA_PATH = PROCESSED_DATA_DIR / 'filtered_data.csv'
 ANALYST_DATA_PATH = PROCESSED_DATA_DIR / 'analyst_jobs.csv'
 ANALYST_SKILL_PATH = PROCESSED_DATA_DIR / 'analyst_skills.csv'
+SOFT_SKILL_PATH= PROCESSED_DATA_DIR / 'soft_skills.csv'
+HARD_SKILL_PATH = PROCESSED_DATA_DIR / 'hard_skills.csv'
+DOMAIN_SKILL_PATH = PROCESSED_DATA_DIR / 'domain_skills.csv'
+
+
+
 # Scraper settings
 CHROME_DRIVER_PATH = r"C:/Selenium Driver"  # Update with your actual path
 CAREERVIET_BASE_URL = "https://careerviet.vn/viec-lam/data-k-vi.html"  # Data jobs

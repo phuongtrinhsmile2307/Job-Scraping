@@ -14,7 +14,8 @@ import matplotlib.pyplot as plt
 from config.setting import (
     RAW_DATA_PATH, PROCESSED_DATA_PATH, FILTERED_DATA_PATH, ANALYST_DATA_PATH,
     CAREERVIET_BASE_URL, MAX_PAGES, MAX_JOBS, MAX_JOBS_PER_PAGE, MAX_WORKERS,
-    USD_TO_VND_RATE, CHROME_DRIVER_PATH, FIGURES_DIR, SAVE_FIGURES, ANALYST_SKILL_PATH
+    USD_TO_VND_RATE, CHROME_DRIVER_PATH, FIGURES_DIR, SAVE_FIGURES, ANALYST_SKILL_PATH,SOFT_SKILL_PATH,HARD_SKILL_PATH,DOMAIN_SKILL_PATH
+
 )
 from src.scraper import CareerVietScraper
 from data_processing.cleaning import JobDataCleaner
@@ -140,6 +141,11 @@ def analyze_data(df=None, args=None):
     hard_skill_df = skills_extractor.get_skills_counts(analyst_jobs, "Hard Skills")
     domains_df = skills_extractor.get_skills_counts(analyst_jobs, "Domains")
     
+    # Save skill statistics
+    soft_skill_df.to_csv(SOFT_SKILL_PATH, index=False)
+    hard_skill_df.to_csv(HARD_SKILL_PATH, index=False)
+    domains_df.to_csv(DOMAIN_SKILL_PATH, index=False)
+    
     print(f"\nAnalysis completed in {time.time() - start_time:.2f} seconds")
     print(f"Analyzed {len(analyst_jobs)} jobs and saved to {ANALYST_SKILL_PATH}")
     print(f"Found {len(soft_skill_df)} unique soft skills")
@@ -187,7 +193,25 @@ def visualize_data(df=None, skills_data=None, args=None):
         df,
         save_path=FIGURES_DIR/"jobs_by_date.png" if SAVE_FIGURES else None
     )
-    
+
+    print("Creating date analysis...")
+    visualizer.plot_jobs_level(
+        df,
+        save_path=FIGURES_DIR/"jobs_by_level.png" if SAVE_FIGURES else None
+    )
+
+    print("Creating date analysis...")
+    visualizer.plot_jobs_type(
+        df,
+        save_path=FIGURES_DIR/"jobs_by_type.png" if SAVE_FIGURES else None
+    )
+
+    print("Creating date analysis...")
+    visualizer.plot_salary_by_job_level(
+        df,
+        save_path=FIGURES_DIR/"salary_by_job_level.png" if SAVE_FIGURES else None
+    )
+
     print("Creating job level analysis...")
     visualizer.plot_experience_by_job_level(
         df,

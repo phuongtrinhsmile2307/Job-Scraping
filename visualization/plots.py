@@ -7,6 +7,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
 from typing import Optional, Tuple, List, Union, Dict
+import numpy as np
+
 
 class JobMarketVisualizer:
     """Class for creating visualizations of job market data."""
@@ -286,6 +288,106 @@ class JobMarketVisualizer:
         if save_path:
             plt.savefig(save_path, bbox_inches='tight', dpi=300)
         
+        plt.show()
+    
+    def plot_jobs_level(self, df: pd.DataFrame,   
+                    title: str = "Jobs By Level",
+                    save_path: Optional[str] = None) -> None:
+        """
+        Create a donut chart with job counts, improving label readability by positioning them dynamically.
+        """
+        job_counts = df['Job Level'].value_counts()
+        job_percentage = job_counts / job_counts.sum() * 100
+        labels = job_counts.index
+
+        fig, ax = plt.subplots(figsize=(8, 6))
+        wedges, texts, autotexts = ax.pie(
+            job_percentage, labels=None, autopct='%1.1f%%',
+            colors=sns.color_palette("Paired"),
+            wedgeprops=dict(width=0.4, edgecolor='w'),  # Donut style
+            textprops={'fontsize': 12, 'weight': 'bold'},
+            pctdistance=0.85  # Adjusts placement of percentage labels inside slices
+        )
+        
+        # Move percentage labels outside and add job level/type labels
+        for i, (wedge, label) in enumerate(zip(wedges, labels)):
+            angle = (wedge.theta2 + wedge.theta1) / 2
+            x = np.cos(np.radians(angle)) * 1.4
+            y = np.sin(np.radians(angle)) * 1.4
+            ax.text(x, y, label, ha='center', fontsize=12, weight='bold')
+        
+        plt.title(title, fontsize=14, weight='bold')
+        
+        if save_path:
+            plt.savefig(save_path, bbox_inches='tight')
+        
+        plt.show()
+
+    def plot_jobs_type(self, df: pd.DataFrame,  
+                    title: str = "Jobs By Type",
+                    save_path: Optional[str] = None) -> None:
+
+        job_counts = df['Job Type'].value_counts()
+        job_percentage = job_counts / job_counts.sum() * 100
+        labels = job_counts.index
+
+        fig, ax = plt.subplots(figsize=(8, 6))
+        wedges, texts, autotexts = ax.pie(
+            job_percentage, labels=None, autopct='%1.1f%%',
+            colors=sns.color_palette("Paired"),
+            wedgeprops=dict(width=0.4, edgecolor='w'),  # Donut style
+            textprops={'fontsize': 12, 'weight': 'bold'},
+            pctdistance=0.85  # Adjusts placement of percentage labels inside slices
+        )
+        
+        # Move percentage labels outside and add job level/type labels
+        for i, (wedge, label) in enumerate(zip(wedges, labels)):
+            angle = (wedge.theta2 + wedge.theta1) / 2
+            x = np.cos(np.radians(angle)) * 1.4
+            y = np.sin(np.radians(angle)) * 1.4
+            ax.text(x, y, label, ha='center', fontsize=12, weight='bold')
+        
+        plt.title(title, fontsize=14, weight='bold')
+        
+        if save_path:
+            plt.savefig(save_path, bbox_inches='tight')
+        
+        plt.show()
+
+    def plot_salary_by_job_level(self, df: pd.DataFrame,  
+                                title: str = "Salary Distribution by Job Level",
+                                save_path: Optional[str] = None) -> None:
+        """
+        Create a column and line chart showing job count and salary range by job level.
+        """
+        # Aggregate data
+        job_counts = df['Job Level'].value_counts().sort_index()
+        avg_min_salary = df.groupby("Job Level")["Min_Salary"].mean().sort_index()
+        avg_max_salary = df.groupby("Job Level")["Max_Salary"].mean().sort_index()
+
+        # Plot setup
+        fig, ax1 = plt.subplots(figsize=(10, 6))
+
+        # Column chart for job count
+        sns.barplot(x=job_counts.index, y=job_counts.values, color='lightblue', label="Job Count", ax=ax1)
+        ax1.set_ylabel("Number of Jobs", color='blue')
+        ax1.set_xlabel("Job Level")
+        ax1.set_title(title)
+
+        # Second axis for salary lines
+        ax2 = ax1.twinx()
+        sns.lineplot(x=avg_min_salary.index, y=avg_min_salary.values, marker="o", color="orange", label="Min Salary", ax=ax2)
+        sns.lineplot(x=avg_max_salary.index, y=avg_max_salary.values, marker="o", color="red", label="Max Salary", ax=ax2)
+        ax2.set_ylabel("Salary (Min & Max)", color='red')
+
+        # Legends
+        ax1.legend(loc="upper left")
+        ax2.legend(loc="upper right")
+
+        # Save if needed
+        if save_path:
+            plt.savefig(save_path)
+
         plt.show()
     
     def plot_skills(self, skill_df: pd.DataFrame, title: str,
