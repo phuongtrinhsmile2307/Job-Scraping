@@ -4,8 +4,6 @@ from pathlib import Path
 import ast
 import plotly.express as px
 import plotly.graph_objs as go
-import io
-from wordcloud import WordCloud
 from collections import Counter
 from plotly.subplots import make_subplots
 import random
@@ -1302,10 +1300,11 @@ def overview_page(filtered_jobs, all_jobs, analyst_jobs):
             - Standardized date formats and salary ranges for consistency.
             - Transformed experience requirements into a structured format.
             - Removed duplicate listings and handled missing values.
+            - Filter out irrelevant job listings from web scraping results.
 
                     
             3. **Skills Extraction**:
-            - Automatically identified and categorized **soft skills**, **hard skills**, and **industry domains** from job descriptions using keyword matching and NLP techniques.
+            - Automatically identified and categorized **soft skills**, **hard skills**, and **industry domains** from job descriptions using keyword matching techniques.
 
                     
             4. **Data Analysis**:
@@ -1736,6 +1735,8 @@ def skills_analysis_page(analyst_jobs):
     Now directly loads skills data from CSV files
     """
     st.markdown('<div id="skills-analysis-section" class="section-header">Skills Analysis</div>', unsafe_allow_html=True)
+    st.markdown("""Analysis of only '**Analyst**' Job Postings""")
+
     SOFT_SKILL_PATH= DATA_DIR/ "soft_skills.csv"
     HARD_SKILLS_PATH= DATA_DIR/ "hard_skills.csv"
     DOMAIN_SKILLS_PATH= DATA_DIR/ "domain_skills.csv"
@@ -1754,7 +1755,6 @@ def skills_analysis_page(analyst_jobs):
     tab1, tab2, tab3 = st.tabs(["Hard Skills", "Soft Skills", "Industry Domains"])
     
     with tab1:
-        st.markdown('<div class="subsection-header">Top Hard Skills</div>', unsafe_allow_html=True)
 
         # Number of skills to show
         n_skills = st.slider("Number of top hard skills to display", 5, min(30, len(hard_skill_df)), 
@@ -1769,7 +1769,6 @@ def skills_analysis_page(analyst_jobs):
             st.info("No hard skills data available.")
         
     with tab2:
-        st.markdown('<div class="subsection-header">Top Soft Skills</div>', unsafe_allow_html=True)
         
         # Number of skills to show
         n_skills = st.slider("Number of top soft skills to display", 5, min(30, len(soft_skill_df)), 
@@ -1785,7 +1784,6 @@ def skills_analysis_page(analyst_jobs):
         
     
     with tab3:
-        st.markdown('<div class="subsection-header">Top Industry Domains</div>', unsafe_allow_html=True)
         
         # Number of domains to show
         n_domains = st.slider("Number of top domains to display", 5, min(30, len(domains_df)), 
