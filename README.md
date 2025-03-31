@@ -1,11 +1,19 @@
+# Vietnamese Data Job Market Analysis
+*Last updated on 25th March 2025*
 ## Overview
-This project scrapes job data from CareerViet, a Vietnamese job listing site, focusing on data-related positions. 
+This project scrapes job data from CareerViet, a Vietnamese job listing site, focusing on data-related positions.
+
 The goal is to analyze the labor market and gain insights by answering these questions:
 1. Which locations have the highest concentration of data-related job postings?
 2. How do salary distributions vary by experience level and location?
 3. What are the most in-demand technical and soft skills for analyst roles?
 4. When were the most job postings recorded?"
-            
+
+**View the full visualization here:**
+   [https://vietnamjob.streamlit.app/](https://vietnamjob.streamlit.app/)    
+   
+   ![image](https://github.com/user-attachments/assets/5cc709ba-7284-4be7-8e05-d05616f4b318)
+
 ## Tools & Technologies
 **Python**:
 - `Selenium`: automated web scraping.
