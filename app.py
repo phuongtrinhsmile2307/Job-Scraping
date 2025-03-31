@@ -187,7 +187,7 @@ CUSTOM_CSS = """
     background-color: #f8f9fa;
 }
 .stTabs [aria-selected="true"] {
-    background-color: #dffbff !important;
+    background-color: #f0f7fe !important;
     color: #1E293B !important;
 }
 
@@ -249,7 +249,7 @@ div.card-content p {
 }
 /* Sidebar background */
 [data-testid="stSidebar"] {
-    background-color: #F8F9FA !important; /* Soft Gray */
+    background-color: #f8f8f8 !important;
 }
 
 /* Hide Streamlit branding */
@@ -296,12 +296,12 @@ def plotly_skills_chart(skill_df, title, color_scheme, top_n=20):
     skill_df_top = skill_df.head(top_n).sort_values(by="Count", ascending=True)
     
     # Create gradient colors based on the scheme
-    if color_scheme == "blues":
-        colors = px.colors.sequential.Blues[-4:]
-    elif color_scheme == "oranges":
-        colors = px.colors.sequential.Oranges[-4:]
+    if color_scheme == "purple":
+        colors=['#daceeb', '#b59ed8', '#8f70c3', '#6644af']
+    elif color_scheme == "mint":
+        colors = ['#a8e7fb', '#80caeb', '#59aedb', '#3391cb', '#0074b9']
     else:
-        colors = px.colors.sequential.Greens[-4:]
+        colors = ['#aaebea', '#86c8c7', '#64a6a6', '#418585', '#1a6666']
     
     fig = px.bar(
         skill_df_top, 
@@ -349,8 +349,7 @@ def plot_top_job_titles(job_title_counts):
         orientation='h',
         title='Top 15 Data-Related Job Titles',
         labels={'x': 'Number of Job Postings', 'y': 'Job Title'},
-        color=job_title_counts_top.values,
-        color_discrete_sequence=px.colors.sequential.Blues[-4:]
+        color_discrete_sequence=['#9c7fca']
     )
     
     fig.update_layout(
@@ -390,11 +389,11 @@ def plot_job_postings_over_time(jobs_by_date):
             jobs_by_date, 
             x='FormattedDate', 
             y='JobCount', 
-            title='Job Postings Over Time',
+            title='Job Postings By Date',
             labels={'FormattedDate': 'Date', 'JobCount': 'Number of Job Postings'},
             markers=True,
             line_shape='linear',
-            color_discrete_sequence=['#369acd']
+            color_discrete_sequence=['#60e5f7']
         )
         
         # Add area under the line
@@ -403,7 +402,7 @@ def plot_job_postings_over_time(jobs_by_date):
                 x=jobs_by_date['FormattedDate'],
                 y=jobs_by_date['JobCount'],
                 fill='tozeroy',
-                fillcolor='rgba(54, 154, 205, 0.2)',
+                fillcolor='rgba(54, 154, 205, 0.1)',
                 line=dict(color='rgba(0,0,0,0)'),
                 showlegend=False,
                 hoverinfo='skip'
@@ -451,7 +450,69 @@ def plot_job_postings_over_time(jobs_by_date):
         )
         fig.update_layout(height=300)
         return fig
-
+def plot_job_postings_by_day(jobs_by_day):
+    """Create a Plotly column chart for job postings by day of the week with improved styling"""
+    try:
+        # Define the days of the week in order
+        days_order = ['Monday', 'Tuesday', 'Wednesday','Thursday', 'Friday', 'Saturday', 'Sunday']
+        
+        # If your data doesn't have the days in the right order, you can reindex it
+        if 'Day' in jobs_by_day.columns:
+            jobs_by_day = jobs_by_day.set_index('Day').reindex(days_order).reset_index()
+        
+        fig = px.bar(
+            jobs_by_day, 
+            y='Day', 
+            x='JobCount', 
+            title='Job Postings by Day of Week',
+            labels={'Day': 'Day of Week', 'JobCount': 'Number of Job Postings'},
+            color_discrete_sequence=['#9c7fca'],
+            category_orders={"Day": days_order}  # Ensure correct order
+        )
+        
+        # Update the layout for better appearance
+        fig.update_layout(
+            height=500,
+            template='plotly_white',
+            title_font_size=16,
+            title_font_family="Inter, sans-serif",
+            xaxis_title_font_size=12,
+            yaxis_title_font_size=12,
+            margin=dict(b=100, l=10, r=10, t=50),
+            plot_bgcolor="white",
+            paper_bgcolor="white",
+            bargap=0.25,
+            hoverlabel=dict(
+                bgcolor="white",
+                font_size=12,
+                font_family="Inter, sans-serif"
+            )
+        )
+        
+        # Add data labels on top of bars
+        fig.update_traces(
+            texttemplate='%{x}',
+            textposition='outside',
+            hovertemplate='<b>%{x}</b><br>Jobs: %{y}<extra></extra>'
+        )
+        
+        # Remove gridlines
+        fig.update_xaxes(showgrid=False)
+        fig.update_yaxes(showgrid=False, rangemode="tozero")
+        
+        return fig
+    except Exception as e:
+        # Create a simple error message figure
+        fig = go.Figure()
+        fig.add_annotation(
+            x=0.5, y=0.5,
+            text=f"Error creating chart: {e}",
+            font=dict(color="red", size=14),
+            showarrow=False,
+            xref="paper", yref="paper"
+        )
+        fig.update_layout(height=300)
+        return fig
 def plot_location_distribution(location_counts):
     """Create an interactive Plotly bar chart for location distribution with improved styling"""
     
@@ -745,10 +806,11 @@ def create_vietnam_province_map(filtered_jobs):
     
     # Define region colors
     region_colors = {
-        "North": "#6ebe9f",
-        "Central": "#f3a935",
-        "South": "#2586a4"
+        "North": "#8df5f2",
+        "Central": "#edeb88",
+        "South": "#9c7fca"
     }
+    
     
     # Improve marker sizing to be more proportional to job count
     min_jobs = df_locations['Jobs'].min()
@@ -784,7 +846,7 @@ def create_vietnam_province_map(filtered_jobs):
                 marker=dict(
                     size=sizes,
                     color=region_colors[region],
-                    opacity=0.7,
+                    opacity=0.8,
                     sizemode='diameter'
                 ),
                 text=region_df.apply(lambda x: f"{x['Province']} ({x['Location']}): {round(x['Jobs'])} jobs", axis=1),
@@ -849,11 +911,6 @@ def create_vietnam_province_map(filtered_jobs):
             yanchor="top"
         )]
     )
-    
-    # Add annotation for top provinces
-    top_provinces = province_job_totals
-    top_provinces_text = "<br>".join([f"<b>{row['Province']}</b>: {round(row['Jobs'])} jobs" 
-                                     for _, row in top_provinces.iterrows()])
     
     return fig
 
@@ -1012,9 +1069,9 @@ def display_province_job_statistics(filtered_jobs):
     
     # Create region color map for consistent colors
     region_colors = {
-        "North": "#6ebe9f",
-        "Central": "#f3a935",
-        "South": "#2586a4"
+        "North": "#8df5f2",
+        "Central": "#edeb88",
+        "South": "#9c7fca"
     }
     
     # Display statistics in tabs
@@ -1329,33 +1386,54 @@ def job_distribution_page(filtered_jobs):
 
     try:
         # Data preparation
-        location_counts = filtered_jobs['Location'].value_counts().reset_index()
-        location_counts.columns = ['Location', 'Number of Jobs']
+
 
         # Create layout with tabs
         tab1, tab2, tab3 = st.tabs(["Job Postings Over Time", "Geographic Distribution", "Job Titles"])
         
         with tab1:
-            # Make sure Date is correctly formatted
             try:
                 filtered_jobs['Date'] = pd.to_datetime(filtered_jobs['Date'], errors='coerce')
                 # Remove any NaT values that might cause issues
                 date_df = filtered_jobs.dropna(subset=['Date'])
                 # Group by date for the time series
                 jobs_by_date = date_df.groupby(date_df['Date'].dt.date).size().reset_index(name='JobCount')
-                
-                # Generate and display the time series chart
+                # Group by day of week for the column chart
+                date_df['Day'] = date_df['Date'].dt.strftime('%A')  # Get day name
+                jobs_by_day = date_df.groupby('Day').size().reset_index(name='JobCount')
+
+                # Generate and display the time series and day by day column chart
                 if not jobs_by_date.empty:
                     time_series_fig = plot_job_postings_over_time(jobs_by_date)
                     st.plotly_chart(time_series_fig, use_container_width=True, config={'displayModeBar': True})
+                    st.markdown(f"""- The data shows **{jobs_by_date['JobCount'].max() if not jobs_by_date.empty else 'N/A'}** postings on the busiest day.""")
+    
+                    # Add a small space between charts
+                    st.markdown("<br>", unsafe_allow_html=True)
+
+                if not jobs_by_day.empty:
+                    max_day_count = jobs_by_day['JobCount'].max()
+                    max_day = jobs_by_day.loc[jobs_by_day['JobCount'] == max_day_count, 'Day'].iloc[0]
+                    min_day_count = jobs_by_day['JobCount'].min()
+                    min_day = jobs_by_day.loc[jobs_by_day['JobCount'] == min_day_count, 'Day'].iloc[0]
+                    
+                    # Generate and display the day of week column chart
+                    day_chart_fig = plot_job_postings_by_day(jobs_by_day)
+                    st.plotly_chart(day_chart_fig, use_container_width=True, config={'displayModeBar': True})
+
+                    # Display insights
+                    st.markdown(f"""
+                    - **{max_day}** has the most job postings with **{max_day_count}** listings
+                    - **{min_day}** has the fewest job postings with **{min_day_count}** listings
+                    """)
                 else:
-                    st.warning("Not enough date data to create the time series chart.")
+                    st.warning("Not enough date data to create the charts.")
             except Exception as e:
-                st.error(f"Error creating time series chart: {e}")
+                st.error(f"Error creating charts: {e}")
         
         with tab2:
             display_province_job_statistics(filtered_jobs)
-        
+
         with tab3:
             # Create and display the job titles chart
             try:
@@ -1363,22 +1441,14 @@ def job_distribution_page(filtered_jobs):
                 if not job_title_counts.empty:
                     job_titles_fig = plot_top_job_titles(job_title_counts)
                     st.plotly_chart(job_titles_fig, use_container_width=True, config={'displayModeBar': True})
+                    st.markdown(f"""
+                    - **Most Common Job Title**: "{job_title_counts.index[0]}" is the most common job title with {job_title_counts.values[0]} listings
+                    """)
                 else:
                     st.warning("Not enough job title data to create the chart.")
             except Exception as e:
                 st.error(f"Error creating job titles chart: {e}")
 
-        # Insights Section
-        if not location_counts.empty and not job_title_counts.empty:
-            st.markdown("### Key Insights on Job Distribution")
-            st.markdown(f"""
-            - **Geographic Concentration**: {location_counts.iloc[0, 0]} leads with {location_counts.iloc[0, 1]} job postings, followed by {location_counts.iloc[1, 0]} ({location_counts.iloc[1, 1]})
-            - **Most Common Job Title**: "{job_title_counts.index[0]}" is the most common job title with {job_title_counts.values[0]} listings
-            - **Job Posting Trends**: The data shows {jobs_by_date['JobCount'].max() if not jobs_by_date.empty else 'N/A'} postings on the busiest day
-            """)
-            st.markdown('</div>', unsafe_allow_html=True)
-        else:
-            st.info("Not enough data to generate insights.")
 
     except Exception as e:
         st.error(f"An error occurred while analyzing job distribution: {e}")
@@ -1432,7 +1502,7 @@ def salary_analysis(filtered_jobs):
                 x=salary_data['Min Salary (M VND)'], 
                 name='Min Salary',
                 opacity=1,
-                marker_color='#2196F3',
+                marker_color='#8df5f2',
                 bingroup='group1'
             ))
             
@@ -1441,7 +1511,7 @@ def salary_analysis(filtered_jobs):
                 x=salary_data['Max Salary (M VND)'], 
                 name='Max Salary',
                 opacity=1,
-                marker_color='#FFB07C',
+                marker_color='#9c7fca',
                 bingroup='group2'
             ))
             
@@ -1495,8 +1565,8 @@ def salary_analysis(filtered_jobs):
                 y=exp_salary['Min_Salary'], 
                 mode='lines+markers',
                 name='Min Salary',
-                line=dict(color='#2196F3', width=3),
-                marker=dict(size=7, color='#2196F3')
+                line=dict(color='#07efeb', width=3),
+                marker=dict(size=7, color='#07efeb')
             ))
             
             # Add max salary line
@@ -1505,8 +1575,8 @@ def salary_analysis(filtered_jobs):
                 y=exp_salary['Max_Salary'], 
                 mode='lines+markers',
                 name='Max Salary',
-                line=dict(color='#FFB07C', width=3),
-                marker=dict(size=7, color='#FFB07C')
+                line=dict(color='#6644af', width=3),
+                marker=dict(size=7, color='#6644af')
             ))
             
             fig_exp.update_layout(
@@ -1566,7 +1636,7 @@ def salary_analysis(filtered_jobs):
                     labels=dict(x="Location", y="Minimum Experience (Years)", color="Salary (M VND)"),
                     x=heatmap_pivot.columns,
                     y=heatmap_pivot.index,
-                    color_continuous_scale='Blues',
+                    color_continuous_scale=['#ffffff', '#a8e7fb', '#3391cb'],
                     aspect="auto",
                     text_auto='.1f'
                 )
@@ -1693,7 +1763,7 @@ def skills_analysis_page(analyst_jobs):
         
         # Plot hard skills using Plotly with improved styling
         if not hard_skill_df.empty:
-            fig = plotly_skills_chart(hard_skill_df, f"Top {n_skills} Hard Skills Required", "oranges", n_skills)
+            fig = plotly_skills_chart(hard_skill_df, f"Top {n_skills} Hard Skills Required", "purple", n_skills)
             st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': True})
         else:
             st.info("No hard skills data available.")
@@ -1708,7 +1778,7 @@ def skills_analysis_page(analyst_jobs):
         
         # Plot soft skills using Plotly with improved styling
         if not soft_skill_df.empty:
-            fig = plotly_skills_chart(soft_skill_df, f"Top {n_skills} Soft Skills Required", "blues", n_skills)
+            fig = plotly_skills_chart(soft_skill_df, f"Top {n_skills} Soft Skills Required", "mint", n_skills)
             st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': True})
         else:
             st.info("No soft skills data available.")
@@ -1767,7 +1837,6 @@ def company_analysis_page(filtered_jobs):
         tab1, tab2 = st.tabs(["Top Companies", "Company Details"])
         
         with tab1:
-            st.markdown('<div class="subsection-header">Top Companies Hiring</div>', unsafe_allow_html=True)
             
             # Use a gradient color scale for companies with improved styling
             fig = px.bar(
@@ -1777,7 +1846,7 @@ def company_analysis_page(filtered_jobs):
                 title="Top 15 Companies Hiring for Data-Related Positions",
                 labels={'x': 'Number of Job Postings', 'y': 'Company'},
                 color=company_counts.values,
-                color_continuous_scale=px.colors.sequential.Blues,
+                color_continuous_scale=['#d4f8f6', '#79a3e4', '#6644af'],
                 text=company_counts.values
             )
             fig.update_layout(
@@ -1786,7 +1855,7 @@ def company_analysis_page(filtered_jobs):
                 yaxis={'categoryorder': 'total ascending'},
                 coloraxis_showscale=False,
                 title_font_family="Inter, sans-serif",
-                title_font_size=20,
+                title_font_size=16,
                 margin=dict(l=10, r=10, t=50, b=10),
                 plot_bgcolor="white",
                 paper_bgcolor="white",
@@ -1806,8 +1875,6 @@ def company_analysis_page(filtered_jobs):
         with tab2:
             st.markdown('<div class="subsection-header">Company Details</div>', unsafe_allow_html=True)
             
-            # Create a filter section with improved styling
-            st.markdown('<div class="filter-section">', unsafe_allow_html=True)
             # Select a company to analyze
             selected_company = st.selectbox(
                 "Select a company to analyze",
@@ -1817,7 +1884,7 @@ def company_analysis_page(filtered_jobs):
             
             # Filter jobs for selected company
             company_jobs = filtered_jobs[filtered_jobs['Company'] == selected_company]
-            
+
             # Company statistics with modern metric cards
             col1, col2, col3 = st.columns(3)
             
@@ -1843,76 +1910,32 @@ def company_analysis_page(filtered_jobs):
                 </div>
                 """, unsafe_allow_html=True)
             
-            # Create sub-tabs for company analysis
-            subtab1, subtab2, subtab3 = st.tabs(["Job Titles", "Experience Requirements", "Requirements"])
+            # Add space 
+            st.markdown("<br>", unsafe_allow_html=True)
+
             
-            with subtab1:
-                # Job titles at company
-                company_titles = company_jobs['Job Title'].value_counts()
+            # Job titles at company
+            company_titles = company_jobs['Job Title'].value_counts()
                 
-                # Create job titles chart with Plotly and improved styling
-                if len(company_titles) > 0:
-                    title_fig = px.bar(
-                        x=company_titles.values[:10], 
-                        y=company_titles.index[:10], 
-                        orientation='h',
-                        title=f"Job Titles at {selected_company}",
-                        labels={'x': 'Number of Job Postings', 'y': 'Job Title'},
-                        color=company_titles.values[:10],
-                        color_continuous_scale=px.colors.sequential.Blues,
-                        text=company_titles.values[:10]
-                    )
-                    title_fig.update_layout(
-                        height=500,
-                        template='plotly_white',
-                        yaxis={'categoryorder': 'total ascending'},
-                        coloraxis_showscale=False,
-                        title_font_family="Inter, sans-serif",
-                        title_font_size=20,
-                        margin=dict(l=10, r=10, t=50, b=10),
-                        plot_bgcolor="white",
-                        paper_bgcolor="white",
-                        hoverlabel=dict(
-                            bgcolor="white",
-                            font_size=12,
-                            font_family="Inter, sans-serif"
-                        )
-                    )
-                    title_fig.update_traces(
-                        textposition='outside',
-                        hovertemplate='<b>%{y}</b><br>Job Postings: %{x}<extra></extra>'
-                    )
-                    
-                    st.plotly_chart(title_fig, use_container_width=True, config={'displayModeBar': True})
-                else:
-                    st.write(f"No job titles data available for {selected_company}")
-            
-            with subtab2:
-                # Prepare data for box plot
-                company_exp = pd.melt(
-                    company_jobs[['Job Title', 'exp_min', 'exp_max']], 
-                    id_vars=['Job Title'], 
-                    value_vars=['exp_min', 'exp_max'],
-                    var_name='Experience Type', 
-                    value_name='Years'
+            # Create job titles chart with Plotly and improved styling
+            if len(company_titles) > 0:
+                title_fig = px.bar(
+                    x=company_titles.values, 
+                    y=company_titles.index, 
+                    orientation='h',
+                    title=f"Job Titles at {selected_company}",
+                    labels={'x': 'Number of Job Postings', 'y': 'Job Title'},
+                    color=company_titles.values,
+                    color_discrete_sequence=['#8f74bd'],
+                    text=company_titles.values
                 )
-                
-                # Create box plot with Plotly and improved styling
-                exp_fig = px.box(
-                    company_exp, 
-                    x='Experience Type', 
-                    y='Years',
-                    title=f"Experience Requirements at {selected_company}",
-                    color='Experience Type',
-                    color_discrete_map={'exp_min': '#1976D2', 'exp_max': '#42A5F5'},
-                    points="all"
-                )
-                exp_fig.update_layout(
+                title_fig.update_layout(
                     height=500,
                     template='plotly_white',
+                    yaxis={'categoryorder': 'total ascending'},
+                    coloraxis_showscale=False,
                     title_font_family="Inter, sans-serif",
-                    title_font_size=20,
-                    showlegend=False,
+                    title_font_size=16,
                     margin=dict(l=10, r=10, t=50, b=10),
                     plot_bgcolor="white",
                     paper_bgcolor="white",
@@ -1922,46 +1945,55 @@ def company_analysis_page(filtered_jobs):
                         font_family="Inter, sans-serif"
                     )
                 )
-                exp_fig.update_traces(
-                    hovertemplate='<b>%{data.name}</b><br>Years: %{y}<extra></extra>'
+                title_fig.update_traces(
+                    textposition='outside',
+                    hovertemplate='<b>%{y}</b><br>Job Postings: %{x}<extra></extra>'
                 )
-                
-                st.plotly_chart(exp_fig, use_container_width=True, config={'displayModeBar': True})
-            
-            with subtab3:
-                # Job requirements
-                if 'Job Requirements' in company_jobs.columns:
-                    # Combine all requirements
-                    all_requirements = " ".join(company_jobs['Job Requirements'].dropna())
                     
-                    try:
-                        # Generate word cloud with improved styling
-                        wordcloud = WordCloud(
-                            width=800, 
-                            height=400, 
-                            background_color='white',
-                            colormap='Blues',
-                            max_words=100,
-                            collocations=False,
-                            contour_width=1,
-                            contour_color='#369acd'
-                        ).generate(all_requirements)
-                        
-                        # Convert WordCloud to image
-                        wordcloud_image = wordcloud.to_image()
-                        
-                        # Save to a bytes buffer
-                        buf = io.BytesIO()
-                        wordcloud_image.save(buf, format='PNG')
-                        buf.seek(0)
-                        
-                        # Display the wordcloud with a caption
-                        st.image(buf, caption=f"Common Requirements at {selected_company}", use_container_width=True)
-                    except Exception as e:
-                        st.error(f"Error creating word cloud: {e}")
-                else:
-                    st.info("Job requirements data not available")
+                st.plotly_chart(title_fig, use_container_width=True, config={'displayModeBar': True})
+            else:
+                st.write(f"No job titles data available for {selected_company}")
             
+            # Prepare data for box plot
+            company_exp = pd.melt(
+                company_jobs[['Job Title', 'exp_min', 'exp_max']], 
+                id_vars=['Job Title'], 
+                value_vars=['exp_min', 'exp_max'],
+                var_name='Experience Type', 
+                value_name='Years'
+            )
+                
+            # Create box plot with Plotly and improved styling
+            exp_fig = px.box(
+                company_exp, 
+                x='Experience Type', 
+                y='Years',
+                title=f"Experience Requirements at {selected_company}",
+                color='Experience Type',
+                color_discrete_map={'exp_min': '#78f2ef', 'exp_max': '#8f70c3'},
+                points="all"
+            )
+            exp_fig.update_layout(
+                height=500,
+                template='plotly_white',
+                title_font_family="Inter, sans-serif",
+                title_font_size=16,
+                showlegend=False,
+                margin=dict(l=10, r=10, t=50, b=10),
+                plot_bgcolor="white",
+                paper_bgcolor="white",
+                hoverlabel=dict(
+                    bgcolor="white",
+                    font_size=12,
+                    font_family="Inter, sans-serif"
+                )
+            )
+            exp_fig.update_traces(
+                hovertemplate='<b>%{data.name}</b><br>Years: %{y}<extra></extra>'
+            )
+                
+            st.plotly_chart(exp_fig, use_container_width=True, config={'displayModeBar': True})
+
             # Insights
             st.markdown("### Key Insights for Selected Company")
             st.markdown(f"""
@@ -1979,7 +2011,7 @@ def raw_data_page(all_jobs, filtered_jobs, analyst_jobs):
     """
     Display the Raw Data page with improved styling and interactivity
     """
-    st.markdown('<div class="section-header">Raw Data</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-header">Data</div>', unsafe_allow_html=True)
     
     # Create tabs for different datasets
     tab1, tab2, tab3 = st.tabs(["All Jobs", "Data-Related Jobs", "Analyst Jobs"])
@@ -2008,7 +2040,7 @@ def raw_data_page(all_jobs, filtered_jobs, analyst_jobs):
             
             # Show sample data
             st.markdown('<div class="subsection-header">Sample Data</div>', unsafe_allow_html=True)
-            st.dataframe(all_jobs.head(100), use_container_width=True)
+            st.dataframe(all_jobs, use_container_width=True)
             
             # Allow downloading the data with a more prominent button
             csv = all_jobs.to_csv(index=False)
@@ -2194,23 +2226,26 @@ def main():
         st.markdown("""
         <style>
             div[data-testid="stButton"] button {
-                background-color: #0cdad6; 
+                background-color: #00dbd8; 
                 color: white;
                 font-weight: bold;
+                text-align:left;
                 border: none;
-                text-align: left;
                 transition: all 0.3s;
             }
             div[data-testid="stButton"] button[kind="secondary"] {
-                background-color: #f0f2f6;
+                background-color: #ebefef;
+                text-align:left;
                 color: #262730;
             }
             div[data-testid="stButton"] button:hover {
-                background-color: #0cdad6;
+                background-color: #00dbd8;
+                text-align:left;
                 color: white;
             }
             div[data-testid="stButton"] button[kind="secondary"]:hover {
                 background-color: #dff8f8;
+                text-align:left;
                 color: #262730;
             }
         </style>
