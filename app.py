@@ -1327,7 +1327,7 @@ def overview_page(filtered_jobs, all_jobs, analyst_jobs):
         # Job Distribution Card - SIMPLEST APPROACH
         with row1_cols[0]:
             # Display image
-            st.image("https://img.freepik.com/free-photo/networking-concept-still-life-assortment_23-2149035667.jpg?t=st=1743323256~exp=1743326856~hmac=afded35d0991d1ea1cb0bac0087330473eca7a27ebfd34110680a67c26ba9e7a&w=1380", 
+            st.image("https://images.unsplash.com/photo-1591696205602-2f950c417cb9?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", 
                     use_container_width=True)
             
             # Add button below image
@@ -1338,7 +1338,7 @@ def overview_page(filtered_jobs, all_jobs, analyst_jobs):
         # Salary Analysis Card
         with row1_cols[1]:
             # Display image
-            st.image("https://img.freepik.com/free-photo/mortgages-loan-finance-real-estate-concept_53876-127118.jpg?t=st=1743324292~exp=1743327892~hmac=71ee27ec45dc613c7ad1fe21c34ac115105830c79e70ecc7010ae007bd98be74&w=1380", 
+            st.image("https://images.unsplash.com/photo-1589556763333-ad818080f39e?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", 
                     use_container_width=True)
             
             # Add button below image
@@ -1353,7 +1353,7 @@ def overview_page(filtered_jobs, all_jobs, analyst_jobs):
         # Skills Analysis Card
         with row2_cols[0]:
             # Display image
-            st.image("https://img.freepik.com/free-photo/ambitious-leader-works-office-infographics-reports-setting-objectives_482257-116840.jpg?t=st=1743324690~exp=1743328290~hmac=4a5a994efaa8ea2ec68818b2bc748c2aa186fe6fd8286b4bae2919b2baac3066&w=1380", 
+            st.image("https://images.unsplash.com/photo-1659018966825-43297e655ccf?q=80&w=2098&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", 
                     use_container_width=True)
             
             # Add button below image
@@ -1364,7 +1364,7 @@ def overview_page(filtered_jobs, all_jobs, analyst_jobs):
         # Company Analysis Card
         with row2_cols[1]:
             # Display image
-            st.image("https://img.freepik.com/free-photo/central-business-district-singapore_335224-642.jpg?t=st=1743325336~exp=1743328936~hmac=51b167beecb48cea068afbb2feee4e97cbfc249568ba830192c8cd2a97e6169b&w=1380",
+            st.image("https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
                     use_container_width=True)
             
             # Add button below image
