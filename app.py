@@ -1338,7 +1338,7 @@ def overview_page(filtered_jobs, all_jobs, analyst_jobs):
         # Salary Analysis Card
         with row1_cols[1]:
             # Display image
-            st.image("https://images.unsplash.com/photo-1589556763333-ad818080f39e?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", 
+            st.image("https://images.pexels.com/photos/10972831/pexels-photo-10972831.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2", 
                     use_container_width=True)
             
             # Add button below image
@@ -1353,7 +1353,7 @@ def overview_page(filtered_jobs, all_jobs, analyst_jobs):
         # Skills Analysis Card
         with row2_cols[0]:
             # Display image
-            st.image("https://images.unsplash.com/photo-1659018966825-43297e655ccf?q=80&w=2098&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", 
+            st.image("https://www.splunk.com/content/dam/splunk-blogs/images/en_us/2023/06/data-scientist-role.jpg", 
                     use_container_width=True)
             
             # Add button below image
@@ -1364,7 +1364,7 @@ def overview_page(filtered_jobs, all_jobs, analyst_jobs):
         # Company Analysis Card
         with row2_cols[1]:
             # Display image
-            st.image("https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+            st.image("https://images.pexels.com/photos/164572/pexels-photo-164572.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
                     use_container_width=True)
             
             # Add button below image
