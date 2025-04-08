@@ -505,8 +505,10 @@ class CareerVietScraper:
             Dictionary with job data or None if unsuccessful
         """
         try:
-            title = job.find('div', class_="title").text.strip().replace('\n', '').replace('(Mới)', '').replace('  ', '')
-            company = job.find('a', class_="company-name").text.strip()
+            title_tag = job.find('div', class_="title")
+            title=title_tag.text.strip().replace('\n', '').replace('(Mới)', '').replace('  ', '')
+            company_tag = job.find('a', class_="company-name")
+            company=company_tag.text.strip() if company_tag else "Company not found" if title_tag else "Title not found"
             link_tag = job.find('a', class_="job_link")
             link = link_tag.get('href') if link_tag else "Link not found"
             
@@ -514,15 +516,37 @@ class CareerVietScraper:
             if link.startswith('/'):
                 link = "https://careerviet.vn" + link
             
-            location = job.find('div', class_="location").text.strip()
-            salary = job.find('div', class_="salary").text.replace('Lương:', '').strip()
-            update_time = job.find('div', class_="time").text.replace('Cập nhật :', '').strip()
-            expire_time = job.find('div', class_="expire-date").text.replace('Hạn nộp:', '').replace('Cơ hội ứng tuyển chỉ còn:', '').strip()
+            location_tag = job.find('div', class_="location")
+            location = location_tag.text.strip() if location_tag else "Location not found"
+
+            salary_tag = job.find('div', class_="salary")
+            salary = salary_tag.text.replace('Lương:', '').strip() if salary_tag else "Salary not found"
+
+            time_class = job.find('div', class_="time")
+                        
+            if time_class:
+                # For update time
+                update_time = "Update time not found"
+                for li in time_class.find_all('li'):
+                    if "Cập nhật" in li.text:
+                        update_time = li.find('time').text.strip() if li.find('time') else update_time
+                        break
+                        
+                # For expire time
+                expire_time = "Expire date not found"
+                for li in time_class.find_all('li'):
+                    if "Hạn nộp" in li.text:
+                        expire_time = li.find('time').text.strip() if li.find('time') else expire_time
+                        break
+            else:
+                update_time = "Update time not found"
+                expire_time = "Expire date not found"
+                
             welfare_ul = job.find('ul', class_='welfare')
             welfare_items = [li.text.strip() for li in welfare_ul.find_all('li')] if welfare_ul else []
 
             # Get detailed job information
-            job_details = self.get_job_details(link)
+            job_details = self.get_job_details(link)  if link != "Link not found" else {}
 
             job_data = {
                 "Job Title": title,

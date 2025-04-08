@@ -553,6 +553,108 @@ def plot_location_distribution(location_counts):
     )
     
     return fig
+def plot_jobs_level(job_counts):
+    """
+    Create a donut chart using Plotly for job levels
+    """
+    labels = job_counts.index
+    
+    # Custom color palette
+    colors = [ '#89e5e3','#b088ca','#84b0ec','#65d5ff', '#b4a7c8',  '#c6c6c6']
+    # If more colors needed, cycle through the palette
+    if len(labels) > len(colors):
+        colors = colors * (len(labels) // len(colors) + 1)
+    
+    fig = go.Figure(data=[go.Pie(
+        labels=labels,
+        values=job_counts,
+        hole=0.5,
+        title_font_family="Inter, sans-serif",
+        title_position="top left",
+        marker=dict(colors=colors[:len(labels)]),
+        textinfo='percent',
+        textposition='outside',
+        hoverinfo='label+value',
+        hoverlabel=dict(bgcolor='white', font_size=14),
+        rotation=90
+    )])
+    
+    fig.update_layout(
+        title=dict(
+            text="Jobs By Level", 
+            font=dict(
+                family="Inter, sans-serif",
+                size=16
+            ),
+            x=0,  # Set x=0 for left alignment
+            y=0.98,  # Slightly down from the top
+            xanchor='left',
+            yanchor='top'
+        ),
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=-0.2,
+            xanchor="center",
+            x=0.5
+        ),
+        width=700,
+        height=500,
+        margin=dict(t=80, b=80, l=20, r=20)
+    )
+    
+    return fig
+def plot_jobs_type(job_type_counts):
+    """
+    Create a donut chart using Plotly for job type
+    """
+    labels = job_type_counts.index
+    
+    # Custom color palette
+    colors = [ '#89e5e3','#b088ca','#84b0ec','#65d5ff', '#b4a7c8',  '#c6c6c6']
+    # If more colors needed, cycle through the palette
+    if len(labels) > len(colors):
+        colors = colors * (len(labels) // len(colors) + 1)
+    
+    fig = go.Figure(data=[go.Pie(
+        labels=labels,
+        values=job_type_counts,
+        hole=0.5,
+        title_font_family="Inter, sans-serif",
+        title_position="top left",
+        marker=dict(colors=colors[:len(labels)]),
+        textinfo='percent',
+        textposition='outside',
+        hoverinfo='label+value',
+        hoverlabel=dict(bgcolor='white', font_size=14),
+        rotation=90
+    )])
+    
+    fig.update_layout(
+        title=dict(
+            text="Jobs By Type", 
+            font=dict(
+                family="Inter, sans-serif",
+                size=16
+            ),
+            x=0,  # Set x=0 for left alignment
+            y=0.98,  # Slightly down from the top
+            xanchor='left',
+            yanchor='top'
+        ),
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=-0.2,
+            xanchor="center",
+            x=0.5
+        ),
+        width=700,
+        height=500,
+        margin=dict(t=80, b=80, l=20, r=20)
+    )
+    
+    return fig
 def create_vietnam_province_map(filtered_jobs):
     """
     Create an interactive province-level map visualization of Vietnam
@@ -1101,7 +1203,7 @@ def display_province_job_statistics(filtered_jobs):
     
     #with tab2:
     # Top provinces bar chart
-    top_provinces = province_job_totals.head(15)
+    top_provinces = province_job_totals
     # Round the job counts for display
     top_provinces['Jobs'] = top_provinces['Jobs'].round().astype(int)
         
@@ -1114,7 +1216,7 @@ def display_province_job_statistics(filtered_jobs):
             x='Province',
             y='Jobs',
             color='Region',
-            title='Top 15 Provinces by Job Count',
+            title='Job By Provinces',
             color_discrete_map=region_colors,
             text='Jobs'
         )
@@ -1388,7 +1490,7 @@ def job_distribution_page(filtered_jobs):
 
 
         # Create layout with tabs
-        tab1, tab2, tab3 = st.tabs(["Job Postings Over Time", "Geographic Distribution", "Job Titles"])
+        tab1, tab2, tab3, tab4 = st.tabs(["Job Postings Over Time", "Geographic Distribution", "Job Titles","Job Types/Levels"])
         
         with tab1:
             try:
@@ -1448,6 +1550,27 @@ def job_distribution_page(filtered_jobs):
             except Exception as e:
                 st.error(f"Error creating job titles chart: {e}")
 
+        with tab4:
+            try:
+                job_counts = filtered_jobs['Job Level'].value_counts()
+                job_type_counts=filtered_jobs['Job Type'].value_counts()
+
+                if not job_counts.empty:
+                    job_levels_fig = plot_jobs_level(job_counts)
+                    st.plotly_chart(job_levels_fig, use_container_width=True, config={'displayModeBar': True})
+                    st.markdown(f"""
+                    - **Most Demanded Level**: {job_counts.index[0]} level leads with {job_counts.values[0]} openings ({(job_counts.values[0]/job_counts.sum()*100):.1f}% of listings)
+                    """)
+                if not job_type_counts.empty:
+                    job_types_fig = plot_jobs_type(job_type_counts)
+                    st.plotly_chart(job_types_fig, use_container_width=True, config={'displayModeBar': True})
+                    st.markdown(f"""
+                    - **Predominant Job Type**: {job_type_counts.index[0]} represents {job_type_counts.values[0]} positions ({(job_type_counts.values[0]/job_type_counts.sum()*100):.1f}% of available roles)
+                    """)
+                else:
+                    st.warning("Not enough data to create the charts.")
+            except Exception as e:
+                st.error(f"Error creating charts: {e}")
 
     except Exception as e:
         st.error(f"An error occurred while analyzing job distribution: {e}")
