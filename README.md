@@ -1,5 +1,5 @@
 # Vietnamese Data Job Market Analysis
-*Last updated on 8th April 2025*
+*Last updated on 9th June 2026*
 ## Overview
 This project scrapes job data from CareerViet, a Vietnamese job listing site, focusing on data-related positions.
 
