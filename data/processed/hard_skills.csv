@@ -1,56 +1,41 @@
 Skill,Count
-SQL,50
-Excel,39
-Power BI,36
-Python,34
-Statistics,29
-R,17
-Mathematics,14
-Tableau,12
-Data Visualization,10
-CRM,9
-VBA,8
-Data Management,7
-Machine Learning,6
-Looker,6
-Dashboard,6
-SAP,5
-PowerPoint,5
-SAS,4
-Data Governance,4
-AWS,4
-Azure,4
-Database Management,3
-Data Mining,3
-Report,3
-ETL,3
-NoSQL,3
-Market Research,3
-BigQuery,3
-Power Automate,2
-JIRA,2
-Metabase,2
-ERP,2
-Jenkins,2
-Airflow,2
-Financial Modeling,2
-Statistical Analysis,2
-Data Modeling,2
-Google Sheet,2
-Data Warehousing,2
-Optimization,2
-Google Analytics,2
-Figma,1
-Ad-hoc,1
-Macros,1
-Generative AI,1
-Confluence,1
-Exploratory Data Analysis,1
-Feature Engineering,1
-EDA,1
-XGBoost,1
-Quantitative Research,1
+Excel,11
+SQL,9
+Power BI,7
+ERP,7
+Python,4
+Tableau,4
+Dashboard,4
+AWS,3
+CRM,3
+Kafka,2
+Azure,2
+Data Visualization,2
+Risk Assessment,1
+Financial Modeling,1
+PowerPoint,1
+Metabase,1
+IoT,1
+Salesforce,1
+Databricks,1
+IBM,1
+PyTorch,1
+Scikit-Learn,1
+TensorFlow,1
+VBA,1
+Pandas,1
+SAP,1
+Statistical Analysis,1
+Statistics,1
+Data Storytelling,1
 Google Data Studio,1
 Automation,1
-MySQL,1
-Scikit-Learn,1
+MongoDB,1
+GitHub,1
+Redshift,1
+Hadoop,1
+Docker,1
+Kubernetes,1
+Data Management,1
+Airflow,1
+Optimization,1
